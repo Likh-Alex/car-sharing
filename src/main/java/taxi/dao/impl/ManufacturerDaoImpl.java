@@ -31,19 +31,18 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
 
     @Override
     public Manufacturer update(Manufacturer manufacturer) {
-        Optional<Manufacturer> targetId = get(manufacturer.getId());
-        if (targetId.isEmpty()) {
-            throw new NoSuchManufacturerException("No manufacturer with name: "
-                    + manufacturer.getName());
-        } else {
-            for (Manufacturer storageManufacturer : Storage.manufacturers) {
-                if (storageManufacturer.getId().equals(targetId.get().getId())) {
+        Optional<Manufacturer> targetManufacturer = get(manufacturer.getId());
+        for (Manufacturer storageManufacturer : Storage.manufacturers) {
+            if (targetManufacturer.isPresent()) {
+                if (storageManufacturer.getId().equals(targetManufacturer.get().getId())) {
                     storageManufacturer.setCountry(manufacturer.getCountry());
                     storageManufacturer.setName(manufacturer.getName());
                 }
             }
         }
-        return targetId.get();
+        return targetManufacturer.orElseThrow(()
+                -> new NoSuchManufacturerException("No manufacturer with name: "
+                + manufacturer.getName()));
     }
 
     @Override
