@@ -1,7 +1,6 @@
 package taxi.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import taxi.dao.CarDao;
 import taxi.lib.Inject;
 import taxi.lib.Service;
@@ -43,27 +42,18 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void addDriverToCar(Driver driver, Car car) {
-        Car targetCar = carDao.get(car.getId()).orElseThrow(()
-                -> new RuntimeException("No such car stored : " + car.getModel()));
-        targetCar.getDrivers().add(driver);
-        carDao.update(targetCar);
+        car.getDrivers().add(driver);
+        carDao.update(car);
     }
 
     @Override
     public void removeDriverFromCar(Driver driver, Car car) {
-        Car targetCar = carDao.get(car.getId()).orElseThrow(()
-                -> new RuntimeException("No such car stored : " + car.getModel()));
-        targetCar.getDrivers().remove(driver);
-        carDao.update(targetCar);
+        car.getDrivers().remove(driver);
+        carDao.update(car);
     }
 
     @Override
     public List<Car> getAllByDriver(Long driverId) {
-        return carDao.getAll()
-                .stream()
-                .filter(car -> car.getDrivers()
-                        .stream()
-                        .anyMatch(driver -> driver.getId().equals(driverId)))
-                .collect(Collectors.toList());
+        return carDao.getAllByDriver(driverId);
     }
 }

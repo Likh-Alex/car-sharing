@@ -2,6 +2,7 @@ package taxi.dao.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import taxi.dao.CarDao;
 import taxi.db.Storage;
 import taxi.lib.Dao;
@@ -42,5 +43,15 @@ public class CarDaoImpl implements CarDao {
     @Override
     public boolean delete(Long id) {
         return Storage.cars.removeIf(c -> c.getId().equals(id));
+    }
+
+    @Override
+    public List<Car> getAllByDriver(Long driverId) {
+        return Storage.cars
+                .stream()
+                .filter(car -> car.getDrivers()
+                        .stream()
+                        .anyMatch(driver -> driver.getId().equals(driverId)))
+                .collect(Collectors.toList());
     }
 }
