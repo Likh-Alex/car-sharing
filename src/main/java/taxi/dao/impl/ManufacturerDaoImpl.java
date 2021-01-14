@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import taxi.dao.ManufacturerDao;
 import taxi.db.Storage;
-import taxi.lib.Dao;
 import taxi.model.Manufacturer;
 
-@Dao
 public class ManufacturerDaoImpl implements ManufacturerDao {
     @Override
     public Manufacturer create(Manufacturer manufacturer) {
