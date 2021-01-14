@@ -17,25 +17,30 @@ public class Application {
         final DriverService driverService = (DriverService) injector
                 .getInstance(DriverService.class);
 
+        Manufacturer toyotaMaker = new Manufacturer("Toyota", "Japan");
+        System.out.println(manufacturerService.create(toyotaMaker));
+        System.out.println(manufacturerService.get(1L));
+        toyotaMaker.setName("Machindra");
+        toyotaMaker.setCountry("India");
+        System.out.println(manufacturerService.update(toyotaMaker));
+        System.out.println(manufacturerService.get(toyotaMaker.getId()));
+        System.out.println(manufacturerService.delete(1L));
+
         Manufacturer volvoMaker = new Manufacturer("Volvo", "Sweden");
         Manufacturer fiatMaker = new Manufacturer("Fiat", "Italy");
         Manufacturer opelMaker = new Manufacturer("Opel", "Germany");
         Manufacturer tavriaMaker = new Manufacturer("Tavria", "Ukraine");
         Manufacturer ladaMaker = new Manufacturer("Lada", "Russia");
-        final Manufacturer shuttle = new Manufacturer("Shuttle", "India");
         manufacturerService.create(volvoMaker);
         manufacturerService.create(fiatMaker);
         manufacturerService.create(opelMaker);
         manufacturerService.create(tavriaMaker);
         manufacturerService.create(ladaMaker);
-        System.out.println(manufacturerService.get(1L));
-        System.out.println(manufacturerService.getAll());
-        volvoMaker.setName("Toyota");
-        volvoMaker.setCountry("Japan");
-        manufacturerService.update(volvoMaker);
-        System.out.println(manufacturerService.get(1L));
-        System.out.println(manufacturerService.delete(1L));
-        System.out.println(manufacturerService.delete(1L));
+        System.out.println(manufacturerService.getAll().size());
+        manufacturerService.delete(volvoMaker.getId());
+        System.out.println(manufacturerService.getAll().size());
+        manufacturerService.delete(fiatMaker.getId());
+        System.out.println(manufacturerService.getAll().size());
 
         //Driver service
         Driver opelDriver = new Driver("Hans", "einzwei");
@@ -52,6 +57,7 @@ public class Application {
         Car opelCar = new Car("Blitz", fiatMaker);
         Car tavriaCar = new Car("Slavuta", tavriaMaker);
         Car ladaCar = new Car("Granta", ladaMaker);
+        final Manufacturer fordMaker = new Manufacturer("Ford", "USA");
         carService.create(fiatCar);
         carService.create(opelCar);
         carService.create(tavriaCar);
@@ -59,7 +65,7 @@ public class Application {
         System.out.println(carService.get(1L).toString());
         System.out.println(carService.get(2L).toString());
         System.out.println(carService.get(3L).toString());
-        fiatCar.setManufacturer(shuttle);
+        fiatCar.setManufacturer(fordMaker);
         carService.update(fiatCar);
         System.out.println(fiatMaker.toString());
         System.out.println(carService.delete(1L));
@@ -72,7 +78,7 @@ public class Application {
         System.out.println(opelCar.toString());
 
         //Car service removeDriverFromCar
-        carService.removeDriverFromCar(opelDriver,opelCar);
+        carService.removeDriverFromCar(opelDriver, opelCar);
         System.out.println("Removing driver from Opel");
         System.out.println(opelCar.toString());
 
