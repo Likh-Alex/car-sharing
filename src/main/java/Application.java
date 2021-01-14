@@ -25,7 +25,6 @@ public class Application {
         System.out.println(manufacturerService.update(toyotaMaker));
         System.out.println(manufacturerService.get(toyotaMaker.getId()));
         System.out.println(manufacturerService.delete(1L));
-        System.out.println(manufacturerService.delete(1L));
 
         Manufacturer volvoMaker = new Manufacturer("Volvo", "Sweden");
         Manufacturer fiatMaker = new Manufacturer("Fiat", "Italy");

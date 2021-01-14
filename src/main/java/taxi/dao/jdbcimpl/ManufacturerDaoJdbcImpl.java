@@ -32,7 +32,6 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
             if (resultSet.next()) {
                 manufacturer.setId(resultSet.getObject(1, Long.class));
             }
-            resultSet.close();
         } catch (SQLException e) {
             throw new DataProcessingException("Can not add new manufacturer "
                     + manufacturer.getName(), e);
@@ -51,10 +50,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Optional<Manufacturer> newManufacturer = Optional
-                        .of(createManufacturer(resultSet));
-                resultSet.close();
-                return newManufacturer;
+                return Optional.of(createManufacturer(resultSet));
             }
         } catch (SQLException e) {
             throw new DataProcessingException("Can not find manufacturer with id: " + id, e);
@@ -72,14 +68,13 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
             while (resultSet.next()) {
                 manufacturerList.add(createManufacturer(resultSet));
             }
-            resultSet.close();
         } catch (SQLException e) {
             throw new DataProcessingException("No manufacturers found", e);
         }
         return manufacturerList;
     }
 
-    private Manufacturer createManufacturer(ResultSet resultSet) throws SQLException {
+    private Manufacturer createManufacturer(ResultSet resultSet) {
         try {
             long manufacturerId = resultSet.getObject("manufacturer_id", Long.class);
             String manufacturerCountry = resultSet.getObject("manufacturer_country", String.class);
@@ -88,9 +83,8 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
             manufacturer.setId(manufacturerId);
             return manufacturer;
         } catch (SQLException e) {
-            throw new DataProcessingException("Can not parse data"
-                    + " from manufacturer with id: "
-                    + resultSet.getObject("manufacturer_id", Long.class), e);
+            throw new DataProcessingException("Can not create a 'manufacturer',"
+                    + " can not parse data", e);
         }
     }
 
@@ -103,7 +97,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
 
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement preparedStatement = connection
-                        .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                        .prepareStatement(query)) {
             preparedStatement.setString(1, manufacturer.getName());
             preparedStatement.setString(2, manufacturer.getCountry());
             preparedStatement.setLong(3, manufacturer.getId());
