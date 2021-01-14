@@ -30,7 +30,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
-                manufacturer.setId(resultSet.getObject(1, Long.class));
+                manufacturer.setId(resultSet.getObject("GENERATED_KEY", Long.class));
             }
         } catch (SQLException e) {
             throw new DataProcessingException("Can not add new manufacturer "
@@ -76,7 +76,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
 
     private Manufacturer createManufacturer(ResultSet resultSet) {
         try {
-            long manufacturerId = resultSet.getObject("manufacturer_id", Long.class);
+            Long manufacturerId = resultSet.getObject("manufacturer_id", Long.class);
             String manufacturerCountry = resultSet.getObject("manufacturer_country", String.class);
             String manufacturerName = resultSet.getObject("manufacturer_name", String.class);
             Manufacturer manufacturer = new Manufacturer(manufacturerName, manufacturerCountry);

@@ -17,7 +17,7 @@ public class Application {
         final DriverService driverService = (DriverService) injector
                 .getInstance(DriverService.class);
 
-        Manufacturer toyotaMaker = new Manufacturer("Toyota","Japan");
+        Manufacturer toyotaMaker = new Manufacturer("Toyota", "Japan");
         System.out.println(manufacturerService.create(toyotaMaker));
         System.out.println(manufacturerService.get(1L));
         toyotaMaker.setName("Machindra");
@@ -78,7 +78,7 @@ public class Application {
         System.out.println(opelCar.toString());
 
         //Car service removeDriverFromCar
-        carService.removeDriverFromCar(opelDriver,opelCar);
+        carService.removeDriverFromCar(opelDriver, opelCar);
         System.out.println("Removing driver from Opel");
         System.out.println(opelCar.toString());
 
