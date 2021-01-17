@@ -42,7 +42,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
     @Override
     public Optional<Manufacturer> get(Long id) {
         String query = "SELECT * FROM manufacturers "
-                + "WHERE manufacturer_id = ? "
+                + "WHERE id = ? "
                 + "AND deleted = FALSE;";
 
         try (Connection connection = ConnectionUtil.getConnection();
@@ -76,7 +76,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
 
     private Manufacturer createManufacturer(ResultSet resultSet) {
         try {
-            Long manufacturerId = resultSet.getObject("manufacturer_id", Long.class);
+            Long manufacturerId = resultSet.getObject("id", Long.class);
             String manufacturerCountry = resultSet.getObject("manufacturer_country", String.class);
             String manufacturerName = resultSet.getObject("manufacturer_name", String.class);
             Manufacturer manufacturer = new Manufacturer(manufacturerName, manufacturerCountry);
