@@ -6,6 +6,8 @@ import taxi.service.CarService;
 import taxi.service.DriverService;
 import taxi.service.ManufacturerService;
 
+import java.util.List;
+
 public class Application {
     private static final Injector injector = Injector.getInstance("taxi");
 
@@ -17,6 +19,34 @@ public class Application {
         final DriverService driverService = (DriverService) injector
                 .getInstance(DriverService.class);
 
+        Manufacturer toyotaMaker = new Manufacturer("NotReallyToyota", "NotReallyJapan");
+        manufacturerService.create(toyotaMaker);
+        Car toyotaCar = new Car("celica",toyotaMaker);
+        System.out.println("CREATE");
+        System.out.println(carService.create(toyotaCar));
+        System.out.println("GET");
+        System.out.println(carService.get(toyotaCar.getId()));
+        Manufacturer kiaManufacturer = new Manufacturer("kia", "korea");
+        manufacturerService.create(kiaManufacturer);
+        toyotaCar.setManufacturer(kiaManufacturer);
+        System.out.println(carService.update(toyotaCar));
+        System.out.println(carService.delete(toyotaCar.getId()));
+        System.out.println(carService.delete(toyotaCar.getId()));
+        System.out.println(carService.get(toyotaCar.getId()));
+//          List<Car> allByDriver = carService.getAllByDriver(1L);
+//        for (Car car: allByDriver ) {
+//            System.out.println(car.toString());
+//        }
+
+//        for (Car car : carService.getAll()) {
+//            System.out.println(car.getModel() + " I AM A CAR");
+//            for (Driver driver: car.getDrivers()) {
+//                System.out.println(driver.getName() + " DRIVER");
+//            }
+//        }
+
+
+        /*
         Manufacturer toyotaMaker = new Manufacturer("Toyota", "Japan");
         System.out.println(manufacturerService.create(toyotaMaker));
         System.out.println(manufacturerService.get(1L));
@@ -90,5 +120,7 @@ public class Application {
         carService.addDriverToCar(manyCarsDriver, tavriaCar);
         carService.addDriverToCar(manyCarsDriver, ladaCar);
         System.out.println(carService.getAllByDriver(3L));
+
+         */
     }
 }
