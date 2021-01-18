@@ -11,6 +11,7 @@ CREATE TABLE `cars`
     CONSTRAINT `cars_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturers` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
 CREATE TABLE `drivers`
 (
     `id`             bigint       NOT NULL AUTO_INCREMENT,
@@ -20,6 +21,7 @@ CREATE TABLE `drivers`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
 CREATE TABLE `manufacturers`
 (
     `id`                   bigint       NOT NULL AUTO_INCREMENT,
@@ -41,5 +43,3 @@ CREATE TABLE `cars_drivers`
     CONSTRAINT `cars_drivers_ibfk_2` FOREIGN KEY (`car_id`) REFERENCES `cars` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
-
-
