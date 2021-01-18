@@ -54,7 +54,7 @@ public class CarDaoJdbcImpl implements CarDao {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(createCar(resultSet));
+                return Optional.of(createCar(resultSet, connection));
             }
         } catch (SQLException e) {
             throw new DataProcessingException("Can not find car with id: " + id, e);
@@ -76,7 +76,7 @@ public class CarDaoJdbcImpl implements CarDao {
                  PreparedStatement preparedStatement = connection.prepareStatement(getAllQuery)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                carList.add(createCar(resultSet));
+                carList.add(createCar(resultSet, connection));
             }
         } catch (SQLException e) {
             throw new DataProcessingException("Can not find any drivers", e);
@@ -84,7 +84,7 @@ public class CarDaoJdbcImpl implements CarDao {
         return carList;
     }
 
-    private Car createCar(ResultSet resultSet) {
+    private Car createCar(ResultSet resultSet, Connection connection) {
         try {
             Long carId = resultSet.getObject("car_id", Long.class);
             String carModel = resultSet.getObject("model", String.class);
@@ -94,7 +94,7 @@ public class CarDaoJdbcImpl implements CarDao {
             Manufacturer manufacturer = new Manufacturer(manufacturerName, manufacturerCountry);
             manufacturer.setId(manufacturersId);
             Car newCar = new Car(carModel, manufacturer);
-            newCar.setDrivers(getAllDriversByCarId(carId));
+            newCar.setDrivers(getAllDriversByCarId(carId, connection));
             newCar.setId(carId);
             return newCar;
         } catch (SQLException e) {
@@ -103,15 +103,14 @@ public class CarDaoJdbcImpl implements CarDao {
         }
     }
 
-    private List<Driver> getAllDriversByCarId(Long carId) {
+    private List<Driver> getAllDriversByCarId(Long carId, Connection connection) {
         String selectQuery = "SELECT d.id, d.driver_name, d.license_number "
                 + "FROM cars_drivers "
                 + "LEFT JOIN drivers d ON d.id = cars_drivers.driver_id "
                 + "LEFT JOIN cars c ON c.id = cars_drivers.car_id "
                 + "WHERE car_id = ? AND d.deleted = FALSE;";
         List<Driver> driverList = new ArrayList<>();
-        try (Connection connection = ConnectionUtil.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, carId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -200,7 +199,7 @@ public class CarDaoJdbcImpl implements CarDao {
             preparedStatement.setLong(1, driverId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                carList.add(createCar(resultSet));
+                carList.add(createCar(resultSet, connection));
             }
         } catch (SQLException e) {
             throw new DataProcessingException("Can not find cars for driver "
