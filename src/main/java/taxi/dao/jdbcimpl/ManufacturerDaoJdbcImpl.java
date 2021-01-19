@@ -18,7 +18,7 @@ import taxi.util.ConnectionUtil;
 public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
     @Override
     public Manufacturer create(Manufacturer manufacturer) {
-        String query = "INSERT INTO manufacturers (manufacturer_name, manufacturer_country) "
+        String query = "INSERT INTO manufacturers (name, country) "
                 + "VALUES(?, ?);";
 
         try (Connection connection = ConnectionUtil.getConnection();
@@ -28,7 +28,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
             preparedStatement.setString(2, manufacturer.getCountry());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (resultSet.next()) {
+            if (resultSet.next() && resultSet.getObject("GENERATED_KEY", Long.class) != null) {
                 manufacturer.setId(resultSet.getObject("GENERATED_KEY", Long.class));
             }
         } catch (SQLException e) {
@@ -75,8 +75,8 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
     private Manufacturer createManufacturer(ResultSet resultSet) {
         try {
             Long manufacturerId = resultSet.getObject("id", Long.class);
-            String manufacturerCountry = resultSet.getObject("manufacturer_country", String.class);
-            String manufacturerName = resultSet.getObject("manufacturer_name", String.class);
+            String manufacturerName = resultSet.getObject("name", String.class);
+            String manufacturerCountry = resultSet.getObject("country", String.class);
             Manufacturer manufacturer = new Manufacturer(manufacturerName, manufacturerCountry);
             manufacturer.setId(manufacturerId);
             return manufacturer;
@@ -89,7 +89,7 @@ public class ManufacturerDaoJdbcImpl implements ManufacturerDao {
     @Override
     public Manufacturer update(Manufacturer manufacturer) {
         String query = "UPDATE manufacturers "
-                + "SET manufacturer_name = ?, manufacturer_country = ? "
+                + "SET name = ?, country = ? "
                 + "WHERE id = ? AND deleted = FALSE;";
 
         try (Connection connection = ConnectionUtil.getConnection();

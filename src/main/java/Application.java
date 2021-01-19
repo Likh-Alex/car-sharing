@@ -19,13 +19,12 @@ public class Application {
 
         Manufacturer toyotaMaker = new Manufacturer("Toyota", "Japan");
         System.out.println(manufacturerService.create(toyotaMaker));
-        System.out.println(manufacturerService.get(1L));
+        System.out.println(manufacturerService.get(toyotaMaker.getId()));
         toyotaMaker.setName("Machindra");
         toyotaMaker.setCountry("India");
         System.out.println(manufacturerService.update(toyotaMaker));
         System.out.println(manufacturerService.get(toyotaMaker.getId()));
-        System.out.println(manufacturerService.delete(1L));
-
+        System.out.println(manufacturerService.delete(toyotaMaker.getId()));
         Manufacturer volvoMaker = new Manufacturer("Volvo", "Sweden");
         Manufacturer fiatMaker = new Manufacturer("Fiat", "Italy");
         Manufacturer opelMaker = new Manufacturer("Opel", "Germany");
@@ -48,48 +47,45 @@ public class Application {
         System.out.println(driverService.getAll());
         additionalDriver.setName("Mykola");
         driverService.update(additionalDriver);
-        System.out.println(additionalDriver.toString());
+        System.out.println(driverService.get(additionalDriver.getId()));
 
         //Car service
         Car fiatCar = new Car("500", fiatMaker);
         Car opelCar = new Car("Blitz", opelMaker);
-        final Car tavriaCar = new Car("Slavuta", tavriaMaker);
-        final Car ladaCar = new Car("Granta", ladaMaker);
         Manufacturer fordMaker = new Manufacturer("Ford", "USA");
         manufacturerService.create(fordMaker);
         carService.create(fiatCar);
         carService.create(opelCar);
-        carService.create(tavriaCar);
-        carService.create(ladaCar);
-        System.out.println(carService.get(1L).toString());
-        System.out.println(carService.get(2L).toString());
-        System.out.println(carService.get(3L).toString());
+        System.out.println(carService.get(fiatCar.getId()).toString());
+        System.out.println(carService.get(opelCar.getId()).toString());
+        fiatCar.setModel("600");
         carService.update(fiatCar);
-        System.out.println(fiatMaker.toString());
-        System.out.println(carService.delete(1L));
+        System.out.println(carService.get(fiatCar.getId()));
+        System.out.println(carService.delete(fiatCar.getId()));
         System.out.println(carService.getAll());
 
         //Car service addDriverToCar
         System.out.println("Adding driver to Opel");
-        System.out.println(opelCar.toString());
-        System.out.println(opelDriver.toString());
+        System.out.println(carService.get(opelCar.getId()));
         carService.addDriverToCar(opelDriver, opelCar);
-        System.out.println(opelCar.toString());
+        System.out.println(carService.get(opelCar.getId()));
 
         //Car service removeDriverFromCar
         System.out.println("Removing driver from Opel");
-        System.out.println(opelCar.toString());
         carService.removeDriverFromCar(opelDriver, opelCar);
-        System.out.println(opelCar.toString());
+        System.out.println(carService.get(opelCar.getId()));
 
         //Car service getAllCarsByDriver
         Driver manyCarsDriver = new Driver("Vasiliy", "123");
         driverService.create(manyCarsDriver);
-        System.out.println(manyCarsDriver.toString());
+        System.out.println(driverService.get(manyCarsDriver.getId()));
+        final Car tavriaCar = new Car("Slavuta", tavriaMaker);
+        final Car ladaCar = new Car("Granta", ladaMaker);
+        carService.create(tavriaCar);
+        carService.create(ladaCar);
         carService.addDriverToCar(manyCarsDriver, opelCar);
         carService.addDriverToCar(manyCarsDriver, tavriaCar);
         carService.addDriverToCar(manyCarsDriver, ladaCar);
-        System.out.println(carService.getAllByDriver(3L));
-
+        System.out.println(carService.getAllByDriver(manyCarsDriver.getId()));
     }
 }

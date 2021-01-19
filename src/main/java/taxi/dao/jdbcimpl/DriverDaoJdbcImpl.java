@@ -18,7 +18,7 @@ import taxi.util.ConnectionUtil;
 public class DriverDaoJdbcImpl implements DriverDao {
     @Override
     public Driver create(Driver driver) {
-        String insertQuery = "INSERT INTO drivers (driver_name, license_number) VALUES (?, ?);";
+        String insertQuery = "INSERT INTO drivers (name, license_number) VALUES (?, ?);";
 
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement insertStatement = connection.prepareStatement(insertQuery,
@@ -27,7 +27,7 @@ public class DriverDaoJdbcImpl implements DriverDao {
             insertStatement.setString(2,driver.getLicenseNumber());
             insertStatement.executeUpdate();
             ResultSet resultSet = insertStatement.getGeneratedKeys();
-            if (resultSet.next()) {
+            if (resultSet.next() && resultSet.getObject("GENERATED_KEY", Long.class) != null) {
                 driver.setId(resultSet.getObject("GENERATED_KEY", Long.class));
             }
         } catch (SQLException e) {
@@ -39,10 +39,11 @@ public class DriverDaoJdbcImpl implements DriverDao {
 
     @Override
     public Optional<Driver> get(Long id) {
-        String selectQuery = "SELECT * FROM drivers WHERE deleted = FALSE AND drivers.id = ?;";
+        String selectQuery = "SELECT * FROM drivers WHERE deleted = FALSE AND id = ?;";
 
         try (Connection connection = ConnectionUtil.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            preparedStatement.setLong(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createDriver(resultSet));
@@ -51,19 +52,6 @@ public class DriverDaoJdbcImpl implements DriverDao {
             throw new DataProcessingException("Can not get a driver with id: " + id, e);
         }
         return Optional.empty();
-    }
-
-    private Driver createDriver(ResultSet resultSet) {
-        try {
-            Long driverId = resultSet.getObject("id", Long.class);
-            String driverName = resultSet.getObject("driver_name", String.class);
-            String licenseNumber = resultSet.getObject("license_number", String.class);
-            Driver newDriver = new Driver(driverName, licenseNumber);
-            newDriver.setId(driverId);
-            return newDriver;
-        } catch (SQLException e) {
-            throw new DataProcessingException("Can not create driver, can not parse data", e);
-        }
     }
 
     @Override
@@ -85,7 +73,7 @@ public class DriverDaoJdbcImpl implements DriverDao {
 
     @Override
     public Driver update(Driver driver) {
-        String updateQuery = "UPDATE drivers SET driver_name = ?,"
+        String updateQuery = "UPDATE drivers SET name = ?,"
                 + "license_number = ? WHERE id = ? AND deleted = FALSE;";
 
         try (Connection connection = ConnectionUtil.getConnection();
@@ -109,9 +97,22 @@ public class DriverDaoJdbcImpl implements DriverDao {
                  PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
             deleteStatement.setLong(1, id);
             int affectedRows = deleteStatement.executeUpdate();
-            return affectedRows != 0;
+            return affectedRows > 0;
         } catch (SQLException e) {
-            throw new DataProcessingException("Can not find driver with id : " + id, e);
+            throw new DataProcessingException("Can not delete driver with id : " + id, e);
+        }
+    }
+
+    private Driver createDriver(ResultSet resultSet) {
+        try {
+            Long driverId = resultSet.getObject("id", Long.class);
+            String driverName = resultSet.getObject("name", String.class);
+            String licenseNumber = resultSet.getObject("license_number", String.class);
+            Driver newDriver = new Driver(driverName, licenseNumber);
+            newDriver.setId(driverId);
+            return newDriver;
+        } catch (SQLException e) {
+            throw new DataProcessingException("Can not create driver, can not parse data", e);
         }
     }
 }
