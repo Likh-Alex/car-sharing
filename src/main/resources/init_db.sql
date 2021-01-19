@@ -46,4 +46,3 @@ CREATE TABLE `cars_drivers`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 4
   DEFAULT CHARSET = utf8;
-
