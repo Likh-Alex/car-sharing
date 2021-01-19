@@ -18,5 +18,4 @@ public class ConnectionUtil {
             throw new RuntimeException("Can not establish the connection to the DB", e);
         }
     }
-
 }
