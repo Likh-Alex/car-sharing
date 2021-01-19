@@ -79,8 +79,8 @@ public class Application {
         Driver manyCarsDriver = new Driver("Vasiliy", "123");
         driverService.create(manyCarsDriver);
         System.out.println(driverService.get(manyCarsDriver.getId()));
-        final Car tavriaCar = new Car("Slavuta", tavriaMaker);
-        final Car ladaCar = new Car("Granta", ladaMaker);
+        Car tavriaCar = new Car("Slavuta", tavriaMaker);
+        Car ladaCar = new Car("Granta", ladaMaker);
         carService.create(tavriaCar);
         carService.create(ladaCar);
         carService.addDriverToCar(manyCarsDriver, opelCar);
