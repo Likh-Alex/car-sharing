@@ -27,7 +27,7 @@
             <td><a href="${pageContext.request.contextPath}/drivers/delete?id=${driver.id}">Delete</a></td>
         </tr>
     </c:forEach>
-</table>
 <td><a href="${pageContext.request.contextPath}/drivers/add">Add driver</a></td>
+</table>
 </body>
 </html>
