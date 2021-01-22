@@ -18,13 +18,16 @@ import taxi.util.ConnectionUtil;
 public class DriverDaoJdbcImpl implements DriverDao {
     @Override
     public Driver create(Driver driver) {
-        String insertQuery = "INSERT INTO drivers (name, license_number) VALUES (?, ?);";
+        String insertQuery = "INSERT INTO drivers (name, license_number, login, password) "
+                + "VALUES (?, ?, ?, ?);";
 
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement insertStatement = connection.prepareStatement(insertQuery,
                          Statement.RETURN_GENERATED_KEYS)) {
             insertStatement.setString(1,driver.getName());
             insertStatement.setString(2,driver.getLicenseNumber());
+            insertStatement.setString(3, driver.getLogin());
+            insertStatement.setString(4, driver.getPassword());
             insertStatement.executeUpdate();
             ResultSet resultSet = insertStatement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -103,13 +106,34 @@ public class DriverDaoJdbcImpl implements DriverDao {
         }
     }
 
+    @Override
+    public Optional<Driver> findByLogin(String login) {
+        String selectQuery = "SELECT * FROM drivers WHERE login = ? AND deleted = FALSE;";
+
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            preparedStatement.setString(1, login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(createDriver(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataProcessingException("Can not get a driver with login: " + login, e);
+        }
+        return Optional.empty();
+    }
+
     private Driver createDriver(ResultSet resultSet) {
         try {
             Long driverId = resultSet.getObject("id", Long.class);
             String driverName = resultSet.getObject("name", String.class);
             String licenseNumber = resultSet.getObject("license_number", String.class);
+            String login = resultSet.getObject("login", String.class);
+            String password = resultSet.getObject("password", String.class);
             Driver newDriver = new Driver(driverName, licenseNumber);
             newDriver.setId(driverId);
+            newDriver.setLogin(login);
+            newDriver.setPassword(password);
             return newDriver;
         } catch (SQLException e) {
             throw new DataProcessingException("Can not create driver, can not parse data", e);
