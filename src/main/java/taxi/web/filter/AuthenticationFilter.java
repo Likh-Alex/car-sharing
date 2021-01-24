@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import taxi.lib.Injector;
 
 public class AuthenticationFilter implements Filter {
-    private static final Injector injector = Injector.getInstance("taxi");
     private static final String DRIVER_ID = "driver_id";
     private final Set<String> allowedUrls = new HashSet<>();
 
