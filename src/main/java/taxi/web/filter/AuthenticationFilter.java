@@ -11,7 +11,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import taxi.lib.Injector;
 
 public class AuthenticationFilter implements Filter {
     private static final String DRIVER_ID = "driver_id";
@@ -32,14 +31,14 @@ public class AuthenticationFilter implements Filter {
         String url = req.getServletPath();
 
         if (allowedUrls.contains(url)) {
-            chain.doFilter(req,resp);
+            chain.doFilter(req, resp);
             return;
         }
         if (driverId == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
-        chain.doFilter(req,resp);
+        chain.doFilter(req, resp);
     }
 
     @Override
