@@ -30,9 +30,11 @@ CREATE TABLE `drivers`
     `name`           varchar(100) NOT NULL,
     `license_number` varchar(100) NOT NULL,
     `deleted`        tinyint(1)   NOT NULL DEFAULT '0',
+    `login`          varchar(100) NOT NULL,
+    `password`       varchar(100) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
+  AUTO_INCREMENT = 15
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `cars_drivers`

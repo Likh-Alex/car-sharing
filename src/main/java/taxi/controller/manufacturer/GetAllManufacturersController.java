@@ -1,4 +1,4 @@
-package taxi.controller;
+package taxi.controller.manufacturer;
 
 import java.io.IOException;
 import java.util.List;
